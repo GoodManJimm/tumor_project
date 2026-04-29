@@ -1,0 +1,19 @@
+# Environments
+venv/
+.env
+
+# Python junk
+__pycache__/
+*.py[cod]
+
+# Node/Frontend junk
+node_modules/
+.next/
+dist/
+
+# Mac system files
+.DS_Store
+
+# (Optional) Large Weights
+# If best_model.pth is >100MB, GitHub might block it without Git LFS
+# *.pth

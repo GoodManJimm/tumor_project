@@ -1,0 +1,81 @@
+I. System Requirements
+Before starting, verify your environment meets these specifications:
+Component	Minimum Version	Purpose
+Python	≥ 3.9	Backend AI inference (FastAPI & PyTorch)
+Node.js	≥ 18	Frontend web interface (Next.js)
+pip	Latest	Python package manager
+Model File	best_model.pth	Pre-trained weights (4-class DenseNet)
+
+II. Installation Steps
+
+Step 1: Project Extraction & Model Placement
+1. Extract `tumor_project.zip`.
+2. **Path Check:** Ensure `best_model.pth` is in the same folder as `main.py`. 
+   > **Note:** In `main.py`, update `MODEL_PATH` to:  
+   > `MODEL_PATH = os.path.join(os.path.dirname(__file__), "best_model.pth")`
+
+Step 2: Backend Server Setup (FastAPI)
+**Terminal 1**
+1. **Navigate and Create Environment:**
+   ```bash
+   cd tumor_project
+   python3 -m venv venv
+   source venv/bin/activate  # Windows: venv\Scripts\activate
+   ```
+
+2. **Install Core Dependencies:**
+   ```bash
+   pip install fastapi uvicorn torch torchvision numpy scipy pillow h5py python-multipart
+   ```
+
+3. **Launch Backend:**
+   ```bash
+   python main.py
+   ```
+
+Step 3: Frontend Server Setup (Next.js)
+**Terminal 2**
+1. **Navigate and Install:**
+   ```bash
+   cd frontend
+   npm install
+   ```
+2. **Launch Web Interface:**
+   ```bash
+   npm run dev
+   ```
+
+III. Technical Summary of the Pipeline
+The system utilizes a custom preprocessing workflow before classification:
+
+1. Smart Loading: Detects `.mat` (v7/v7.3) or standard formats (`.jpg`, `.png`).
+2. Gaussian Smoothing: Applies a blur (sigma = 1) to filter MRI sensor noise.
+3. Dynamic Thresholding: Calculates a threshold based on 0.75 * mean + 0.25 *std of  pixels to isolate brain tissue from the background.
+4. DenseNet-121 Inference: Classifies the processed image into one of 4 categories: Meningioma, Glioma, Pituitary, or Normal.
+
+IV. Troubleshooting & Environment Reset
+
+Critical Reset: "Clean Slate" Method
+If you encounter persistent `ImportError`, `ModuleNotFoundError`, or dependency version conflicts, **do not** try to patch it. Reset the environment entirely:
+
+1. **Deactivate and Delete:**
+   ```bash
+   deactivate
+   rm -rf venv  # Windows: rmdir /s /q venv
+   ```
+2. **Rebuild:**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # Windows: venv\Scripts\activate
+   pip install fastapi uvicorn torch torchvision numpy scipy pillow h5py python-multipart
+   ```
+
+Common Error Fixes
+"Model not initialised": The script cannot find `best_model.pth`. Double-check the filename and directory.
+"No module named 'multipart'": This is caused by missing the `python-multipart` package. Run the install command in the reset step above.
+MPS/GPU Crashes (Mac): If the server crashes on a Mac, find the `device` line in `main.py` and force it to CPU:
+  `device = torch.device("cpu")`
+CORS Blocked: Ensure the backend is running on port `8000` and the frontend is on `5173`. If you change ports, you must update the `allow_origins` list in `main.py`.
+
+Appendix H) Samples of images after Dynamic Thresholding
+The images are stored in the folder Dynamic Threshold Samples that you will get after unzip the tumor_project.zip file.
