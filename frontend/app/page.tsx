@@ -5,7 +5,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 // ============================================================================
 // CONFIGURATION
 // ============================================================================
-const GEMINI_API_KEY = "AIzaSyCcPkq9G9Gbyb4XHY770V7qb9h6gHMIRXs"; 
+const GEMINI_API_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"; // change this to a valid gemini api key
 const BACKEND_URL = "http://localhost:8000/predict";
 
 // ============================================================================
