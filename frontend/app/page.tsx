@@ -5,7 +5,8 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 // ============================================================================
 // CONFIGURATION
 // ============================================================================
-const GEMINI_API_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"; // change this to a valid gemini api key
+// Change this api key to your own api key if you want validation to work
+const GEMINI_API_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"; 
 const BACKEND_URL = "http://localhost:8000/predict";
 
 // ============================================================================
@@ -194,6 +195,9 @@ export default function Home() {
   const [confidence, setConfidence] = useState<string>("");
   const [allProbs, setAllProbs] = useState<Record<string, string>>({});
   const [pipeline, setPipeline] = useState<string>("");
+  const [tumorOverlay, setTumorOverlay] = useState<string>("");
+  const [preprocessedImage, setPreprocessedImage] = useState<string>("");
+  const [hasTumor, setHasTumor] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [validationStatus, setValidationStatus] = useState<
@@ -226,6 +230,9 @@ export default function Home() {
     setLoading(true);
     setError("");
     setResult("");
+    setTumorOverlay("");
+    setPreprocessedImage("");
+    setHasTumor(false);
     setValidationStatus("idle");
     setValidationMessage("");
 
@@ -285,6 +292,9 @@ export default function Home() {
         setConfidence(data.confidence);
         setAllProbs(data.all_probabilities || {});
         setPipeline(data.pipeline_used || "");
+        setHasTumor(data.has_tumor || false);
+        setPreprocessedImage(data.preprocessed_image || "");
+        setTumorOverlay(data.tumor_overlay || "");
       } else {
         setError(data.error || "Unknown error occurred.");
       }
@@ -304,6 +314,9 @@ export default function Home() {
     setConfidence("");
     setAllProbs({});
     setPipeline("");
+    setTumorOverlay("");
+    setPreprocessedImage("");
+    setHasTumor(false);
     setError("");
     setValidationStatus("idle");
     setValidationMessage("");
@@ -610,6 +623,44 @@ export default function Home() {
                 <p style={styles.pipelineText}>
                   📎 Preprocessing pipeline used: <strong>{pipeline}</strong>
                 </p>
+              </div>
+            )}
+
+            {/* MRI Images — Preprocessed + Tumor Overlay */}
+            {preprocessedImage && (
+              <div style={styles.infoBlock}>
+                <h3 style={styles.subSectionTitle}>🔬 MRI Scan Analysis</h3>
+                <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+                  <div style={{ flex: 1, minWidth: "200px", textAlign: "center" }}>
+                    <p style={{ fontSize: "13px", fontWeight: 600, color: "#475569", marginBottom: "8px" }}>
+                      Preprocessed MRI
+                    </p>
+                    <img
+                      src={`data:image/png;base64,${preprocessedImage}`}
+                      alt="Preprocessed MRI"
+                      style={{ width: "100%", maxWidth: "280px", borderRadius: "10px", border: "1px solid #e2e8f0" }}
+                    />
+                    <p style={{ fontSize: "12px", color: "#94a3b8", marginTop: "6px" }}>
+                      Gaussian σ=1 + Dynamic Threshold Applied
+                    </p>
+                  </div>
+
+                  {hasTumor && tumorOverlay && (
+                    <div style={{ flex: 1, minWidth: "200px", textAlign: "center" }}>
+                      <p style={{ fontSize: "13px", fontWeight: 600, color: "#dc2626", marginBottom: "8px" }}>
+                        🔴 Predicted Tumor Region
+                      </p>
+                      <img
+                        src={`data:image/png;base64,${tumorOverlay}`}
+                        alt="Tumor Region Overlay"
+                        style={{ width: "100%", maxWidth: "280px", borderRadius: "10px", border: "2px solid #fca5a5" }}
+                      />
+                      <p style={{ fontSize: "12px", color: "#94a3b8", marginTop: "6px" }}>
+                        Red region = predicted tumor location
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
