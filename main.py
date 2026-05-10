@@ -119,7 +119,7 @@ def load_model(path):
         print(f"❌ Model loading failed: {str(e)}")
         return None
 
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "best_model_fold_2.pth")
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "best_model.pth")
 model = load_model(MODEL_PATH)
 
 # ============================================================================
