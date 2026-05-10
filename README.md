@@ -48,7 +48,7 @@ tumor_project/
 
 The trained model file (`best_model.pth`) exceeds GitHub's 25MB file size limit and is hosted externally.
 
-**Download link:** https://drive.google.com/file/d/1_tkjDwj637qYsFzwm7DaSj0lnm_RyAfq/view?usp=sharing
+**Download link:** https://drive.google.com/file/d/1-P26MfSFhs3DrNVRjoDtodcmL4DZSbLb/view?usp=sharing
 
 > This is the **balanced augmented model** trained on 16,992 images (2,832 originals × 6 augmentation factor, 708 images per class). Validated with 5-fold StratifiedGroupKFold CV. Mean F1-Score: 97.17%.
 
